@@ -4,17 +4,27 @@ import { ArrowLeftIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { generatePagination } from '@/app/lib/utils';
+import { usePathname, useSearchParams } from 'next/navigation';
 
 export default function Pagination({ totalPages }: { totalPages: number }) {
   // NOTE: Uncomment this code in Chapter 11
 
-  // const allPages = generatePagination(currentPage, totalPages);
+  const pathName = usePathname();
+  const searchParamas = useSearchParams();
+  const currentPage = Number(searchParamas.get('page')) || 1;
+  const allPages = generatePagination(currentPage, totalPages);
+  
+  const createPageURL = (page : string|number) => {
+    const params = new URLSearchParams(searchParamas);
+    params.set('page', page.toString());
+    return `${pathName}?${params.toString()}`
+  }
 
   return (
     <>
       {/*  NOTE: Uncomment this code in Chapter 11 */}
 
-      {/* <div className="inline-flex">
+      <div className="inline-flex">
         <PaginationArrow
           direction="left"
           href={createPageURL(currentPage - 1)}
@@ -47,7 +57,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
           href={createPageURL(currentPage + 1)}
           isDisabled={currentPage >= totalPages}
         />
-      </div> */}
+      </div>
     </>
   );
 }
@@ -83,37 +93,37 @@ function PaginationNumber({
   );
 }
 
-function PaginationArrow({
-  href,
-  direction,
-  isDisabled,
-}: {
-  href: string;
-  direction: 'left' | 'right';
-  isDisabled?: boolean;
-}) {
-  const className = clsx(
-    'flex h-10 w-10 items-center justify-center rounded-md border',
-    {
-      'pointer-events-none text-gray-300': isDisabled,
-      'hover:bg-gray-100': !isDisabled,
-      'mr-2 md:mr-4': direction === 'left',
-      'ml-2 md:ml-4': direction === 'right',
-    },
-  );
-
-  const icon =
-    direction === 'left' ? (
-      <ArrowLeftIcon className="w-4" />
-    ) : (
-      <ArrowRightIcon className="w-4" />
+  function PaginationArrow({
+    href,
+    direction,
+    isDisabled,
+  }: {
+    href: string;
+    direction: 'left' | 'right';
+    isDisabled?: boolean;
+  }) {
+    const className = clsx(
+      'flex h-10 w-10 items-center justify-center rounded-md border',
+      {
+        'pointer-events-none text-gray-300': isDisabled,
+        'hover:bg-gray-100': !isDisabled,
+        'mr-2 md:mr-4': direction === 'left',
+        'ml-2 md:ml-4': direction === 'right',
+      },
     );
 
-  return isDisabled ? (
-    <div className={className}>{icon}</div>
-  ) : (
-    <Link className={className} href={href}>
-      {icon}
-    </Link>
-  );
-}
+    const icon =
+      direction === 'left' ? (
+        <ArrowLeftIcon className="w-4" />
+      ) : (
+        <ArrowRightIcon className="w-4" />
+      );
+
+    return isDisabled ? (
+      <div className={className}>{icon}</div>
+    ) : (
+      <Link className={className} href={href}>
+        {icon}
+      </Link>
+    );
+  }
