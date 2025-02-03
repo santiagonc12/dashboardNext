@@ -10,7 +10,7 @@ export default function RootLayout({
       <body className={`${montserrat.className} antialiased`}>
         {children}
         <footer className="bg-red-400 w-full h-[30px]">
-          Este es el layout y la prueba del primer commit
+          Este es el layout y la prueba del segundo commit
         </footer>
       </body>
     </html>
